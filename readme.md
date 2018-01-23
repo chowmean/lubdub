@@ -1,3 +1,5 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/chowmean/lubdub)](https://goreportcard.com/report/github.com/chowmean/lubdub)
+
 ## Lubdub
 #### A program to send your CPU stat to service responsible for monitoring your host.
 
