@@ -19,7 +19,7 @@ func check(e error) {
     glog.Flush()
 }
 
-func format_send(data string){
+func formatSend(data string){
 	argsWithoutProg := os.Args[1:]
 	url :=  argsWithoutProg[0]
 	hostname, err := os.Hostname()
@@ -34,15 +34,15 @@ func format_send(data string){
 }
 
 func readCPU(){
-	cpu_stat,err := ioutil.ReadFile("/proc/stat")
+	cpustat,err := ioutil.ReadFile("/proc/stat")
         check(err)
-	go format_send(string(cpu_stat))
+	go formatSend(string(cpustat))
 }
 
 func readPROC(file string){
-	proc_data,err := ioutil.ReadFile(file)
+	procdata,err := ioutil.ReadFile(file)
 	check(err)
-	go format_send(string(proc_data))
+	go formatSend(string(procdata))
 }
 
 
