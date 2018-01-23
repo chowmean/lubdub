@@ -1,16 +1,16 @@
 package httpClass
 
 import (
-	"fmt"
-	"encoding/json"
-	"net/http"
-	"io/ioutil"
 	"bytes"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"net/http"
 )
 
 // Salutation : Slient Structure
 // Printer : Struct Client
-// Greet : Creates a Client 
+// Greet : Creates a Client
 type Client struct {
 	Token string
 }
@@ -26,8 +26,8 @@ func BasicAuthClient(token string) *Client {
 // Printer : Data strcutore to send in api calls
 type Content struct {
 	Hostname string `json:"hostname"`
-	ID      int    `json:"id"`
-	Content string `json:"content"`
+	ID       int    `json:"id"`
+	Content  string `json:"content"`
 }
 
 // Printer : function to make a post api call
@@ -62,4 +62,3 @@ func (s *Client) doRequest(req *http.Request) ([]byte, error) {
 	}
 	return body, nil
 }
-
