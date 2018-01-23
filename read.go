@@ -1,18 +1,22 @@
 package main
 
 import (
-    "fmt"
+    //"fmt"
+    "strconv"
+    "time"
     "io/ioutil"
     "os"
     "path/filepath"
     "regexp"
     "./httpClass"
+    "github.com/golang/glog"
 )
 
 func check(e error) {
     if e != nil {
-        fmt.Print("error")
+	glog.Info("Error reading file" + string(e.Error()))
     }
+    glog.Flush()
 }
 
 func format_send(data string){
@@ -43,13 +47,20 @@ func readPROC(file string){
 
 
 func main(){
-	go readCPU()
-	searchDir := "/proc/"
-	filepath.Walk(searchDir, func(path string, f os.FileInfo, err error) error {
-		match, _ := regexp.MatchString("/proc/([0-9]+)/status", path)
-		if(match){
-			go readPROC(path)
-		}
-	        return nil
-	})
+	argsWithoutProg := os.Args[1:]
+	ttl :=  argsWithoutProg[1]
+	for{
+		go readCPU()
+		searchDir := "/proc/"
+		filepath.Walk(searchDir, func(path string, f os.FileInfo, err error) error {
+			match, _ := regexp.MatchString("/proc/([0-9]+)/status", path)
+			if(match){
+				go readPROC(path)
+			}
+	        	return nil
+		})
+	i, err := strconv.Atoi(ttl)
+	check(err)
+	time.Sleep(time.Duration(i) * time.Second)
+	}
 }
