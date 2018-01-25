@@ -10,6 +10,7 @@ import (
 	"regexp"
 	"strconv"
 	"time"
+	"math/rand"
 )
 
 func check(e error) {
@@ -19,42 +20,53 @@ func check(e error) {
 	glog.Flush()
 }
 
-func formatSend(data string) {
+const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+func RandStringBytes(n int) string {
+    b := make([]byte, n)
+    for i := range b {
+        b[i] = letterBytes[rand.Intn(len(letterBytes))]
+    }
+    return string(b)
+}
+
+func formatSend(data string, id string) {
 	argsWithoutProg := os.Args[1:]
 	url := argsWithoutProg[0]
 	hostname, err := os.Hostname()
 	check(err)
 	content := httpClass.Content{
 		Content:  data,
-		ID:       1,
+		ID:       id,
 		Hostname: hostname,
 	}
 	client := httpClass.BasicAuthClient("Token")
 	client.PostStatus(&content, url)
 }
 
-func readCPU() {
+func readCPU(id string) {
 	cpustat, err := ioutil.ReadFile("/proc/stat")
 	check(err)
-	go formatSend(string(cpustat))
+	go formatSend(string(cpustat), id)
 }
 
-func readPROC(file string) {
+func readPROC(file string, id string) {
 	procdata, err := ioutil.ReadFile(file)
 	check(err)
-	go formatSend(string(procdata))
+	go formatSend(string(procdata), id)
 }
 
 func main() {
 	argsWithoutProg := os.Args[1:]
 	ttl := argsWithoutProg[1]
 	for {
-		go readCPU()
+		id := RandStringBytes(18)
+		go readCPU(id)
 		searchDir := "/proc/"
 		filepath.Walk(searchDir, func(path string, f os.FileInfo, err error) error {
 			match, _ := regexp.MatchString("/proc/([0-9]+)/status", path)
 			if match {
-				go readPROC(path)
+				go readPROC(path,id)
 			}
 			return nil
 		})

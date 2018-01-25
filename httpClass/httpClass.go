@@ -26,7 +26,7 @@ func BasicAuthClient(token string) *Client {
 // Printer : Data strcutore to send in api calls
 type Content struct {
 	Hostname string `json:"hostname"`
-	ID       int    `json:"id"`
+	ID       string    `json:"id"`
 	Content  string `json:"content"`
 }
 
