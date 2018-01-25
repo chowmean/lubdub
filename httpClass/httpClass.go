@@ -28,6 +28,8 @@ type Content struct {
 	Hostname string `json:"hostname"`
 	ID       string    `json:"id"`
 	Content  string `json:"content"`
+	ApiAccessToken string `json:"api_access_token"`
+	Type  string `json:"type"`
 }
 
 // Printer : function to make a post api call

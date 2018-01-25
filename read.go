@@ -1,7 +1,7 @@
 package main
 
 import (
-	//"fmt"
+//	"fmt"
 	"./httpClass"
 	"github.com/golang/glog"
 	"io/ioutil"
@@ -30,15 +30,18 @@ func RandStringBytes(n int) string {
     return string(b)
 }
 
-func formatSend(data string, id string) {
+func formatSend(data string, id string, typeS string) {
 	argsWithoutProg := os.Args[1:]
 	url := argsWithoutProg[0]
+	token := argsWithoutProg[1]
 	hostname, err := os.Hostname()
 	check(err)
 	content := httpClass.Content{
 		Content:  data,
 		ID:       id,
 		Hostname: hostname,
+		ApiAccessToken: token,
+		Type: typeS,
 	}
 	client := httpClass.BasicAuthClient("Token")
 	client.PostStatus(&content, url)
@@ -47,18 +50,18 @@ func formatSend(data string, id string) {
 func readCPU(id string) {
 	cpustat, err := ioutil.ReadFile("/proc/stat")
 	check(err)
-	go formatSend(string(cpustat), id)
+	go formatSend(string(cpustat), id, "CPU")
 }
 
 func readPROC(file string, id string) {
 	procdata, err := ioutil.ReadFile(file)
 	check(err)
-	go formatSend(string(procdata), id)
+	go formatSend(string(procdata), id, "CPU PROCESS")
 }
 
 func main() {
 	argsWithoutProg := os.Args[1:]
-	ttl := argsWithoutProg[1]
+	ttl := argsWithoutProg[2]
 	for {
 		id := RandStringBytes(18)
 		go readCPU(id)
