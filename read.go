@@ -1,7 +1,6 @@
 package main
 
 import (
-//	"fmt"
 	"./httpClass"
 	"github.com/golang/glog"
 	"io/ioutil"
@@ -13,6 +12,11 @@ import (
 	"math/rand"
 )
 
+
+func randomInt(min, max int) int {
+    return min + rand.Intn(max-min)
+}
+
 func check(e error) {
 	if e != nil {
 		glog.Info("Error reading file" + string(e.Error()))
@@ -20,14 +24,12 @@ func check(e error) {
 	glog.Flush()
 }
 
-const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
-func RandStringBytes(n int) string {
-    b := make([]byte, n)
-    for i := range b {
-        b[i] = letterBytes[rand.Intn(len(letterBytes))]
+func randomString(len int) string {
+    bytes := make([]byte, len)
+    for i := 0; i < len; i++ {
+        bytes[i] = byte(randomInt(65, 90))
     }
-    return string(b)
+    return string(bytes)
 }
 
 func formatSend(data string, id string, typeS string) {
@@ -60,10 +62,11 @@ func readPROC(file string, id string) {
 }
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
 	argsWithoutProg := os.Args[1:]
 	ttl := argsWithoutProg[2]
 	for {
-		id := RandStringBytes(18)
+		id := randomString(18)
 		go readCPU(id)
 		searchDir := "/proc/"
 		filepath.Walk(searchDir, func(path string, f os.FileInfo, err error) error {
