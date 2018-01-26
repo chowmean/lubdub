@@ -61,6 +61,12 @@ func readPROC(file string, id string) {
 	go formatSend(string(procdata), id, "CPU PROCESS")
 }
 
+func readMemInfo(id string){
+	meminfo, err := ioutil.ReadFile("/proc/meminfo")
+	check(err)
+	go formatSend(string(meminfo), id, "MEMORY")
+}
+
 func main() {
 	rand.Seed(time.Now().UnixNano())
 	argsWithoutProg := os.Args[1:]
@@ -68,6 +74,7 @@ func main() {
 	for {
 		id := randomString(18)
 		go readCPU(id)
+		go readMemInfo(id)
 		searchDir := "/proc/"
 		filepath.Walk(searchDir, func(path string, f os.FileInfo, err error) error {
 			match, _ := regexp.MatchString("/proc/([0-9]+)/status", path)
